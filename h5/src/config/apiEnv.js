@@ -3,7 +3,7 @@
  * - dev：走 Vite 代理，请求发到本地后端
  * - prod：直连下方线上地址
  */
-export const API_PROFILE = 'dev'
+export const API_PROFILE = 'prod'
 
 /** 生产环境 API 根地址（不含末尾斜杠），需与后台部署域名一致 */
 export const PROD_API_ORIGIN = 'http://47.108.243.127:8791'
