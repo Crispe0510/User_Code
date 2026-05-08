@@ -6,7 +6,7 @@
 export const API_PROFILE = 'prod'
 
 /** 生产环境 API 根地址（不含末尾斜杠），需与后台部署域名一致 */
-export const PROD_API_ORIGIN = 'http://47.108.243.127:8791'
+export const PROD_API_ORIGIN = 'https://user-code-lovat.vercel.app/'
 
 /** H5 axios baseURL：后端上下文为 /api/h5 */
 export function getH5ApiBase() {
