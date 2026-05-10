@@ -23,6 +23,7 @@ const draft = ref('')
 const loading = ref(true)
 const sending = ref(false)
 const aiThinking = ref(false)
+const aiError = ref('')
 const listEl = ref(null)
 
 const scenarioKey = () => String(route.params.scenarioId)
@@ -118,13 +119,19 @@ async function send() {
 async function askAi() {
   if (aiThinking.value) return
   aiThinking.value = true
+  aiError.value = ''
   const r = await postAiReply({
     scenarioKey: scenarioKey(),
     topicKey: topicKey(),
     topicTitle: topicTitle.value,
-  }).catch(() => null)
+  }).catch(err => {
+    aiError.value = err?.response?.data?.msg || err?.message || 'AI request failed'
+    return null
+  })
   if (r?.code === 200 && r.data) {
     messages.value = [...messages.value, r.data]
+  } else if (r?.msg) {
+    aiError.value = r.msg
   }
   aiThinking.value = false
 }
@@ -208,6 +215,7 @@ function isAi(msg)   { return msg.senderType === 'ai' }
         </button>
         <span class="chat__ai-hint">Get a conversation suggestion</span>
       </div>
+      <p v-if="aiError" class="chat__error">{{ aiError }}</p>
 
       <!-- Voice selector -->
       <p class="chat__voice-label">Send as</p>
@@ -376,6 +384,15 @@ function isAi(msg)   { return msg.senderType === 'ai' }
 .chat__ai-btn:active { transform: scale(0.97); }
 .chat__ai-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 .chat__ai-hint { font-size: 0.72rem; color: var(--c-muted); }
+.chat__error {
+  margin: -4px 0 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #fff1f2;
+  color: #be123c;
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
 
 /* voice selector */
 .chat__voice-label { margin: 0 0 6px; font-size: 0.72rem; font-weight: 600; color: var(--c-muted); }
